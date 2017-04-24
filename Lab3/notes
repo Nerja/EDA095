@@ -1,15 +1,32 @@
-tcp6       0      0 [::]:30000              [::]:*                  LISTEN
+lsof -i :30000   rensa port 30000
 
-lyssnar på port 30000 efter anslutningar
+Server startad utan klienter:
+------------------------------------
+tcp6       0      0 [::]:30000              [::]:*                  LISTEN 
 
-en klient ansluten
-tcp        0      0 localhost:53868         localhost:40000         ESTABLISHED
-tcp6       0      0 [::]:40000              [::]:*                  LISTEN     
-tcp6       0      0 localhost:40000         localhost:53868         ESTABLISHED
+Lyssnar på port 30000 efter tcp anslutningar
+------------------------------------
 
-Klienten har localhost:53868 <-> localhost:40000 och servern har
 
-tcp        0      0 localhost:53869         localhost:40000         ESTABLISHED
-tcp6       0      0 localhost:40000         localhost:53869         ESTABLISHED
+Server med en ansluten klient:
+------------------------------------
+tcp        0      0 localhost:55658         localhost:30000         ESTABLISHED
+tcp6       0      0 [::]:30000              [::]:*                  LISTEN     
+tcp6       0      0 localhost:30000         localhost:55658         ESTABLISHED
 
-Klienten har localhost:53869 <-> localhost:40000 och servern har
+Lyssnar på port 30000 fortfarande.
+Anslutning från servern (localhost:30000) till klienten (localhost:55658)
+samt anslutning från klienten (localhost:55658) till servern (localhost:30000)
+------------------------------------
+
+
+Server med två ansluten klient:
+------------------------------------
+tcp        0      0 localhost:55666         localhost:30000         ESTABLISHED
+tcp        0      0 localhost:55658         localhost:30000         ESTABLISHED
+tcp6       0      0 [::]:30000              [::]:*                  LISTEN     
+tcp6       0      0 localhost:30000         localhost:55658         ESTABLISHED
+tcp6       0      0 localhost:30000         localhost:55666         ESTABLISHED
+
+Analogt med ovan
+------------------------------------

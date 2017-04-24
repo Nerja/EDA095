@@ -13,10 +13,8 @@ public class Client {
 		InetAddress ip = null;
 		int port = 0;
 		try {
-			// ip = InetAddress.getByName(args[0]);
-			// port = Integer.parseInt(args[1]);
-			ip = InetAddress.getByName("127.0.0.1");
-			port = 30000;
+			ip = InetAddress.getByName(args[0]);
+			port = Integer.parseInt(args[1]);
 		} catch (Exception e) {
 			System.err.println("Please enter ip and port");
 			System.exit(1);

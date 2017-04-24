@@ -11,7 +11,11 @@ public class Main {
 			MessageBroadcaster mb = new MessageBroadcaster(monitor);
 			mb.start();
 			while(true)
-				acceptConnection(serverSocket, monitor);
+				try{
+					acceptConnection(serverSocket, monitor);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

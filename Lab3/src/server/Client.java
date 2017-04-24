@@ -18,7 +18,7 @@ public class Client {
 	}
 
 	public void sendMessage(String msg) {
-		synchronized (pw) { //Only one write
+		synchronized (pw) { // Only one write
 			pw.println(msg.trim());
 			pw.flush();
 		}
@@ -31,11 +31,11 @@ public class Client {
 		}
 		return msg;
 	}
-	
+
 	public String getAddress() {
 		return socket.getInetAddress().toString();
 	}
-	
+
 	public void close() throws IOException {
 		br.close();
 		pw.close();
