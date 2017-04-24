@@ -1,0 +1,15 @@
+tcp6       0      0 [::]:30000              [::]:*                  LISTEN
+
+lyssnar på port 30000 efter anslutningar
+
+en klient ansluten
+tcp        0      0 localhost:53868         localhost:40000         ESTABLISHED
+tcp6       0      0 [::]:40000              [::]:*                  LISTEN     
+tcp6       0      0 localhost:40000         localhost:53868         ESTABLISHED
+
+Klienten har localhost:53868 <-> localhost:40000 och servern har
+
+tcp        0      0 localhost:53869         localhost:40000         ESTABLISHED
+tcp6       0      0 localhost:40000         localhost:53869         ESTABLISHED
+
+Klienten har localhost:53869 <-> localhost:40000 och servern har
