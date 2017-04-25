@@ -27,8 +27,6 @@ public class Processor extends Thread {
 		URL work;
 		try {
 			while (!isInterrupted() && (work = master.fetchWork()) != null) {
-				if (work.toString().contains("pierre"))
-					System.out.println(work.toString());
 				try {
 					process(work);
 				} catch (FileNotFoundException e) {
@@ -59,20 +57,23 @@ public class Processor extends Thread {
 
 			Elements elements = htmlDoc.getElementsByTag("a");
 			elements.addAll(htmlDoc.getElementsByTag("frame"));
-			List<String> parsedLinks = new LinkedList<String>();
+			List<URL> parsedLinks = new LinkedList<URL>();
 			List<String> parsedEmails = new LinkedList<String>();
 			for (Element element : elements)
-				processElement(element, parsedLinks, parsedEmails);
+				processElement(work, element, parsedLinks, parsedEmails);
 			master.addParsedInfo(work, parsedLinks, parsedEmails);
 		}
 	}
 
-	private void processElement(Element element, List<String> parsedLinks, List<String> parsedEmails) {
+	private void processElement(URL base, Element element, List<URL> parsedLinks, List<String> parsedEmails) {
 		String outlinkString = element.tagName().equals("a") ? element.attributes().get("href")
 				: element.attributes().get("src");
 		if (outlinkString.startsWith("mailto:"))
 			parsedEmails.add(outlinkString);
-		else
-			parsedLinks.add(outlinkString);
+		else {
+			try {
+				parsedLinks.add(new URL(base, outlinkString));
+			} catch (MalformedURLException e) {}
+		}
 	}
 }
