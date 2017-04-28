@@ -5,11 +5,11 @@ import java.util.NoSuchElementException;
 
 public class Database {
 
-	HashSet<String> visited;
+	HashSet<URL> visited;
 	LinkedList<URL> urlQueue;
 	
 	HashSet<URL> emails;
-	LinkedList<URL> links;
+	HashSet<URL> links;
 	
 	int limit; 
 	int count = 0;
@@ -19,33 +19,38 @@ public class Database {
 		this.add(url);
 		
 		emails = new HashSet<URL>();
-		links = new LinkedList<URL>();
+		links = new HashSet<URL>();
 		
 		limit = l;
 		
-		visited = new HashSet<String>();
+		visited = new HashSet<URL>();
 		count = 0;
 		
 	}
 	
-	synchronized URL pop() throws NoSuchElementException {
-		if(urlQueue.size() > 0 && count < limit) {
-			URL url = urlQueue.pop();
-			links.add(url);
-			visited.add(url.toString());
-			
-			count++;
-			System.out.println("Crawled " + count + "/" + limit);
-			return url;
+	public synchronized URL pop() throws InterruptedException {
+		URL url = null;
+		while (url == null && visited.size() < limit) {
+			while(urlQueue.size() == 0 && visited.size() < limit) {
+				wait();
+			}
+			url = urlQueue.pop();
+			if(visited.contains(url)) {
+				url = null;
+			}
 		}
-		throw new NoSuchElementException();
+		if(url != null) {
+			visited.add(url);
+			System.out.println("Crawled " + visited.size() + "/" + limit);
+		}
+		return url;
 	}
 	
 	synchronized void add(URL url) {
 		urlQueue.add(url);
 	}
 
-	public synchronized boolean visited(String href) {
+	public synchronized boolean visited(URL href) {
 		return visited.contains(href);
 	}
 
@@ -53,11 +58,10 @@ public class Database {
 		emails.add(u);
 	}
 
-	public synchronized boolean finished() {
-		return count >= limit - 1;
-	}
 
-	public void printResults() {
+	public synchronized void printResults() throws InterruptedException {
+		while(visited.size() < limit)
+			wait();
 		System.out.println("List of addresses:");
 		for (URL u : emails) {
 			System.out.println(u);

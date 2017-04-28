@@ -32,6 +32,8 @@ public class SpiderThread extends Thread {
 	void parse(URL url) {
 		try {
 			URLConnection conn = url.openConnection();
+			conn.setConnectTimeout(2000);
+			conn.setReadTimeout(2000);
 			String contentType = conn.getContentType();
 			if (contentType != null && contentType.contains("text/html")) {
 				
@@ -53,7 +55,7 @@ public class SpiderThread extends Thread {
 	void addLinks(Elements links) throws MalformedURLException {
 		for (Element link : links) {
 			String href = link.attr("abs:href");
-			if (href.length() > 0 && !db.visited(href)) {
+			if (href.length() > 0 && !db.visited(new URL(href))) {
 				URL u = new URL(href);
 				if(href.contains("mailto:")) {
 					db.addEmail(u);

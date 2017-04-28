@@ -28,11 +28,8 @@ public class MultiMain {
 	}
 
 	private static void crawl(int linkLimit, String homepage, int numberThreads) throws InterruptedException, MalformedURLException {
-		WorkMaster master = new WorkMaster(linkLimit);
 		URL homepageUrl = new URL(homepage);
-		List<String> links = new LinkedList<String>();
-		links.add(homepage);
-		master.addParsedInfo(homepageUrl, links, new LinkedList<String>());
+		WorkMaster master = new WorkMaster(linkLimit, homepageUrl);
 		Thread[] threads = new Thread[numberThreads];
 		for(int i = 0; i < numberThreads; i++) {
 			threads[i] = new Processor(master);

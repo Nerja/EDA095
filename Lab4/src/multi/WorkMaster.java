@@ -17,20 +17,20 @@ public class WorkMaster {
 	private List<URL> linksQueue;
 	private int linkLimit, lastUpdate;
 
-	public WorkMaster(int linkLimit) {
+	public WorkMaster(int linkLimit, URL homepage) {
 		parsedLinks = new LinkedList<>();
 		parsedEmails = new LinkedList<>();
 		visitedLinks = new HashSet<URL>();
 		linksQueue = new LinkedList<>();
+		linksQueue.add(homepage);
 		this.linkLimit = linkLimit;
 		lastUpdate = 0;
 	}
 
-	public synchronized void addParsedInfo(URL base, List<String> links, List<String> emails)
+	public synchronized void addParsedInfo(URL base, List<URL> links, List<String> emails)
 			throws MalformedURLException {
 		parsedEmails.addAll(emails);
-		for (String l : links) {
-			URL url = new URL(base, l);
+		for(URL url : links) {
 			parsedLinks.add(url.toString());
 			if (!visitedLinks.contains(url))
 				linksQueue.add(url);

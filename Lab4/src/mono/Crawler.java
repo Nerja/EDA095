@@ -92,8 +92,7 @@ public class Crawler {
 						if (!visitedLinks.contains(outlink))
 							linksQueue.add(outlink);
 						parsedLinks.add(outlink.toString());
-					} catch (Exception e) {
-					} // Unknown protocol
+					} catch (Exception e) { } 
 				}
 			}
 		}
