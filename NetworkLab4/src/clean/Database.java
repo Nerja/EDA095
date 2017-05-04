@@ -79,6 +79,8 @@ public class Database {
 		}
 		System.out.println("");	
 		System.out.println("Time elapsed: " + elapsed + "ms");
+		System.out.println("Amount of Links: " + visited.size());
+		System.out.println("Amount of Emails: " + emails.size());
 	}
 	
 
