@@ -1,34 +1,31 @@
+package clean;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 public class Database {
-
-	HashSet<URL> visited;
-	LinkedList<URL> urlQueue;
 	
-	HashSet<URL> emails;
-	HashSet<URL> links;
+	private LinkedList<URL> urlQueue;
 	
-	int limit; 
-	int count = 0;
+	private HashSet<URL> emails;
+	private HashSet<URL> visited;
 	
-	public Database(URL url, int l) {
+	private int limit; 
+	
+	public Database(URL url, int limit) {
+		this.limit = limit;
+				
 		urlQueue = new LinkedList<URL>();
-		this.add(url);
+		urlQueue.add(url);
 		
 		emails = new HashSet<URL>();
-		links = new HashSet<URL>();
-		
-		limit = l;
-		
 		visited = new HashSet<URL>();
-		count = 0;
+		
 		
 	}
 	
-	public synchronized URL pop() throws InterruptedException {
+	public synchronized URL pop(int threadNbr) throws InterruptedException {
 		URL url = null;
 		while (url == null && visited.size() < limit) {
 			while(urlQueue.size() == 0 && visited.size() < limit) {
@@ -41,13 +38,19 @@ public class Database {
 		}
 		if(url != null) {
 			visited.add(url);
-			System.out.println("Crawled " + visited.size() + "/" + limit);
+			notifyAll();
+			System.out.println("Crawled " + visited.size() + "/" + limit + " by thread " + threadNbr);
 		}
 		return url;
 	}
 	
-	synchronized void add(URL url) {
+	public synchronized boolean keepCrawling() {
+		return visited.size() < limit;
+	}
+	
+	public synchronized void add(URL url) {
 		urlQueue.add(url);
+		notifyAll();
 	}
 
 	public synchronized boolean visited(URL href) {
@@ -60,17 +63,22 @@ public class Database {
 
 
 	public synchronized void printResults() throws InterruptedException {
+		long t = System.currentTimeMillis();
 		while(visited.size() < limit)
 			wait();
-		System.out.println("List of addresses:");
+		long elapsed = System.currentTimeMillis() - t;
+
+		System.out.println("\nList of URLs:");
+		for(URL u : visited) {
+			System.out.println(u);
+		}
+		
+		System.out.println("List of emails:");
 		for (URL u : emails) {
 			System.out.println(u);
 		}
-		System.out.println("\nList of URLs:");
-		for(URL u : links) {
-			System.out.println(u);
-		}
 		System.out.println("");	
+		System.out.println("Time elapsed: " + elapsed + "ms");
 	}
 	
 
