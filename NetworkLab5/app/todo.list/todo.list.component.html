@@ -1,7 +1,7 @@
 <div class="container well">
   <h1>Things to do</h1>
   <ul class="list-group">
-    <li *ngFor="let item of myList" class="list-group-item">
+    <li *ngFor="let item of myList" class="list-group-item" (click)="viewTodo(item.id)">
       {{item.text}}
       <ng-template [ngIf]="item.done">
         <span class="glyphicon glyphicon-ok"></span>
