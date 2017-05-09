@@ -3,7 +3,7 @@
   <ul class="list-group">
     <li *ngFor="let item of myList; let i = index" class="list-group-item" (click)="viewTodo(i)">
       <span *ngIf="item.done" class="glyphicon glyphicon-check"></span>
-      <span *ngIf="item.done == false" class="glyphicon glyphicon-unchecked"></span>
+      <span *ngIf="!item.done" class="glyphicon glyphicon-unchecked"></span>
       {{item.text}}
     </li>
   </ul>
