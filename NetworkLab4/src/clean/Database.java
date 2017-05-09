@@ -1,15 +1,19 @@
 package clean;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class Database {
 	
 	private LinkedList<URL> urlQueue;
 	
-	private HashSet<URL> emails;
-	private HashSet<URL> visited;
+	private HashSet<String> emails;
+	private HashSet<String> visited;
 	
 	private int limit; 
 	
@@ -19,8 +23,8 @@ public class Database {
 		urlQueue = new LinkedList<URL>();
 		urlQueue.add(url);
 		
-		emails = new HashSet<URL>();
-		visited = new HashSet<URL>();
+		emails = new HashSet<String>();
+		visited = new HashSet<String>();
 		
 		
 	}
@@ -32,12 +36,12 @@ public class Database {
 				wait();
 			}
 			url = urlQueue.pop();
-			if(visited.contains(url)) {
+			if(visited(url.toString())) {
 				url = null;
 			}
 		}
 		if(url != null) {
-			visited.add(url);
+			visited.add(url.toString());
 			notifyAll();
 			System.out.println("Crawled " + visited.size() + "/" + limit + " by thread " + threadNbr);
 		}
@@ -53,12 +57,12 @@ public class Database {
 		notifyAll();
 	}
 
-	public synchronized boolean visited(URL href) {
-		return visited.contains(href);
+	public synchronized boolean visited(String string) {
+		return visited.contains(string);
 	}
 
 	public synchronized void addEmail(URL u) {
-		emails.add(u);
+		emails.add(u.toString());
 	}
 
 
@@ -68,19 +72,42 @@ public class Database {
 			wait();
 		long elapsed = System.currentTimeMillis() - t;
 
-		System.out.println("\nList of URLs:");
-		for(URL u : visited) {
+		/*System.out.println("\nList of URLs:");
+		for(String u : visited) {
 			System.out.println(u);
 		}
 		
 		System.out.println("List of emails:");
 		for (URL u : emails) {
 			System.out.println(u);
-		}
-		System.out.println("");	
+		}*/
+		
+		
 		System.out.println("Time elapsed: " + elapsed + "ms");
 		System.out.println("Amount of Links: " + visited.size());
 		System.out.println("Amount of Emails: " + emails.size());
+	
+		try {
+			save(visited, "links.txt");
+			save(emails, "emails.txt");
+		} catch (Exception e) {
+			System.out.println("Save of links failed!");
+		}
+		
+	}
+	
+	public static void save(Set<String> obj, String path) throws Exception {
+	    PrintWriter pw = null;
+	    try {
+	        pw = new PrintWriter(
+	            new OutputStreamWriter(new FileOutputStream(path), "UTF-8"));
+	        for (Object s : obj) {
+	            pw.println(s.toString());
+	        }
+	        pw.flush();
+	    } finally {
+	        pw.close();
+	    }
 	}
 	
 

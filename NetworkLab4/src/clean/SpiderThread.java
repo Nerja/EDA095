@@ -25,7 +25,6 @@ public class SpiderThread extends Thread {
 		while(db.keepCrawling())
 			crawl();
 		
-		System.out.println("Thread " + nbr + " shutting down");
 	}
 	
 	private void crawl() {
@@ -67,7 +66,7 @@ public class SpiderThread extends Thread {
 		
 		for (Element link : links) {
 			String href = link.tagName().equals("a") ? link.attr("abs:href") : link.attr("abs:src");
-			if (href.length() > 0 && !db.visited(new URL(href))) {
+			if (href.length() > 0 && !db.visited(href)) {
 				URL u = new URL(href);
 				if(href.contains("mailto:")) {
 					db.addEmail(u);
